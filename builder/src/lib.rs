@@ -34,6 +34,16 @@ fn impl_derive_macro(ast: &syn::DeriveInput) -> TokenStream {
                 self.current_dir = Some(current_dir);
                 self
             }
+            fn build(&mut self) -> Result<#name, Box<dyn std::error::Error>> {
+                Ok(
+                    Command {
+                        executable: self.executable.take().ok_or("executable is not set")?,
+                        args: self.args.take().ok_or("args is not set")?,
+                        env: self.env.take().ok_or("env is not set")?,
+                        current_dir: self.current_dir.take().ok_or("current_dir is not set")?
+                    }
+                )
+            }
         }
         impl #name {
             pub fn builder() -> CommandBuilder {
